@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
@@ -8,15 +9,16 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.listen(3000, function() {
+const port = process.env.port || 3000;
+app.listen(port, function() {
   console.log("Server started on port 3000");
 });
 
-app.get("/", function(req, res) {
+app.route("/")
+.get(function(req, res) {
   res.sendFile(__dirname + "/index.html");
-});
-
-app.post("/", function(req, res) {
+})
+.post(function(req, res) {
   var crypto = req.body.crypto;
   var fiat = req.body.fiat;
   var amount = req.body.amount;
@@ -24,7 +26,7 @@ app.post("/", function(req, res) {
   var options = {
     url: "https://apiv2.bitcoinaverage.com/convert/global",
     headers: {
-      'x-ba-key': 'ZGFmNWJkNGU3MDAzNDMwZDg0NzU4ZjU5ODU0MTA5M2I'
+      'x-ba-key': process.env.key
     },
     method: "GET",
     qs: {
@@ -46,5 +48,3 @@ app.post("/", function(req, res) {
   });
 
 });
-
-// curl -H 'x-ba-key: OTZhMjAxNT0NGFkNDU0N2IyMTdjNjdkYzMxMWZkNzI'
